@@ -3,22 +3,21 @@
 const Decimal = require("decimal.js");
 const ValidationResult = require("./validation-result");
 
+const DefaultMaxDigits = 11;
 const Errors = {
-  invalidDecimal: {
+  invalidDecimalError: {
     code: "doubleNumber.e001",
     message: "The value is not a valid decimal number.",
   },
-  maxDigits: {
+  maxDigitsError: {
     code: "doubleNumber.e002",
     message: "The value exceeded maximum number of digits.",
   },
-  maxPlaces: {
+  maxPlacesError: {
     code: "doubleNumber.e003",
     message: "The value exceeded maximum number of decimal places.",
   },
 };
-
-const DefaultMaxDigits = 11;
 
 /**
  * Matcher validates that string value represents a decimal number or null.
@@ -69,22 +68,22 @@ class DecimalNumberMatcher {
 
   _validateWithZeroParams(numberOfDigits, value, result) {
     if (numberOfDigits > DefaultMaxDigits) {
-      result.addInvalidTypeError(Errors.maxDigits.code, Errors.maxDigits.message);
+      result.addInvalidTypeError(Errors.maxDigitsError.code, Errors.maxDigitsError.message);
     }
   }
 
   _validateWithOneParam(numberOfDigits, value, result) {
     if (numberOfDigits > this.params[0]) {
-      result.addInvalidTypeError(Errors.maxDigits.code, Errors.maxDigits.message);
+      result.addInvalidTypeError(Errors.maxDigitsError.code, Errors.maxDigitsError.message);
     }
   }
 
   _validateWithTwoParams(number, numberOfDigits, value, result) {
     if (numberOfDigits > this.params[0]) {
-      result.addInvalidTypeError(Errors.maxDigits.code, Errors.maxDigits.message);
+      result.addInvalidTypeError(Errors.maxDigitsError.code, Errors.maxDigitsError.message);
     }
     if (number.decimalPlaces() > this.params[1]) {
-      result.addInvalidTypeError(Errors.maxPlaces.code, Errors.maxPlaces.message);
+      result.addInvalidTypeError(Errors.maxPlacesError.code, Errors.maxPlacesError.message);
     }
   }
 
@@ -94,7 +93,7 @@ class DecimalNumberMatcher {
       decimalNumber = new Decimal(value);
     } catch (e) {
       decimalNumber = null;
-      result.addInvalidTypeError(Errors.invalidDecimal.code, Errors.invalidDecimal.message);
+      result.addInvalidTypeError(Errors.invalidDecimalError.code, Errors.invalidDecimalError.message);
     }
 
     return decimalNumber;
